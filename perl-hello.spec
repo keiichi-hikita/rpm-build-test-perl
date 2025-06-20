@@ -23,5 +23,5 @@ chmod +x %{buildroot}/usr/local/bin/perl-hello
 /usr/local/bin/perl-hello
 
 %changelog
-* Thu Jun 20 2025 You <you@example.com> - %{version}-1
+* Thu Jun 20 2025 You keiichi.hikita@gmail.com - %{version}-1
 - Initial build

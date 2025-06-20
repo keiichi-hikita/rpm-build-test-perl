@@ -34,13 +34,13 @@ jobs:
 
       - name: Prepare rpmbuild environment
         run: |
-          mkdir -p ./rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-          cp hello.pl ./rpmbuild/SOURCES/
-          sed "s/%{version}/${{ env.VERSION }}/" perl-hello.spec > ./rpmbuild/SPECS/perl-hello.spec
+          mkdir -p /home/runner/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          cp hello.pl /home/runner/rpmbuild/SOURCES/
+          sed "s/%{version}/${{ env.VERSION }}/" perl-hello.spec > /home/runner/rpmbuild/SPECS/perl-hello.spec
 
       - name: Build RPM
         run: |
-          cd ./rpmbuild
+          cd /home/runner/rpmbuild
           rpmbuild -ba SPECS/perl-hello.spec
 
       - name: Upload RPM to GitHub Release
@@ -48,6 +48,6 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           files: |
-            ./rpmbuild/RPMS/**/*.rpm
+            /home/runner/rpmbuild/RPMS/**/*.rpm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
