@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*'  # v1.0.0 のようなタグ push 時のみ実行
 
+permissions:
+  contents: write  # GitHub Release作成に必要
+
 jobs:
   build:
     runs-on: ubuntu-latest  # Ubuntu ランナーを使用
@@ -31,13 +34,13 @@ jobs:
 
       - name: Prepare rpmbuild environment
         run: |
-          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
-          cp hello.pl ~/rpmbuild/SOURCES/
-          sed "s/%{version}/${{ env.VERSION }}/" perl-hello.spec > ~/rpmbuild/SPECS/perl-hello.spec
+          mkdir -p ./rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          cp hello.pl ./rpmbuild/SOURCES/
+          sed "s/%{version}/${{ env.VERSION }}/" perl-hello.spec > ./rpmbuild/SPECS/perl-hello.spec
 
       - name: Build RPM
         run: |
-          cd ~/rpmbuild
+          cd ./rpmbuild
           rpmbuild -ba SPECS/perl-hello.spec
 
       - name: Upload RPM to GitHub Release
@@ -45,6 +48,6 @@ jobs:
         with:
           tag_name: ${{ github.ref_name }}
           files: |
-            ~/rpmbuild/RPMS/**/*.rpm
+            ./rpmbuild/RPMS/**/*.rpm
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
