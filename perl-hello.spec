@@ -1,36 +1,27 @@
 Name:           perl-hello
 Version:        %{version}
 Release:        1%{?dist}
-Summary:        A Hello World script using JSON module
+Summary:        A simple hello world Perl script
 
 License:        MIT
-URL:            https://github.com/keiichi-hikita/perl-hello-rpm
-Source0:        hello.pl
-
 BuildArch:      noarch
-Requires:       perl
+Requires:       perl(JSON)
 
 %description
-A simple "Hello, World!" program written in Perl using the JSON CPAN module.
+This is a sample hello world Perl script that uses JSON module.
 
 %prep
 
 %build
-# cpanm などで必要なCPANモジュールをローカルにインストール
-mkdir -p lib
-PERL_MM_USE_DEFAULT=1 cpanm -L $PWD --installdeps . || :
 
 %install
-mkdir -p %{buildroot}/usr/bin
-install -m 0755 %{SOURCE0} %{buildroot}/usr/bin/hello.pl
-
-mkdir -p %{buildroot}/usr/lib/perl5/vendor_perl
-cp -r lib/perl5/* %{buildroot}/usr/lib/perl5/vendor_perl/
+mkdir -p %{buildroot}/usr/local/bin
+cp %{_sourcedir}/hello.pl %{buildroot}/usr/local/bin/perl-hello
+chmod +x %{buildroot}/usr/local/bin/perl-hello
 
 %files
-/usr/bin/hello.pl
-/usr/lib/perl5/vendor_perl/*
+/usr/local/bin/perl-hello
 
 %changelog
-* Thu Jun 19 2025 Your Name <you@example.com> - 1.0.0-1
-- Add JSON dependency via cpanm
+* Thu Jun 20 2025 You <you@example.com> - %{version}-1
+- Initial build
