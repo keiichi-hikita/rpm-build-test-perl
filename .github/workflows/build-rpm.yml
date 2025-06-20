@@ -1,0 +1,39 @@
+name: Build RPM
+
+on:
+  push:
+    branches:
+      - initial-commit
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y rpm perl cpanminus
+
+      - name: Prepare rpmbuild environment
+        run: |
+          mkdir -p ~/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
+          cp hello.pl ~/rpmbuild/SOURCES/
+          version=$(cat VERSION)
+          sed "s/%{version}/$version/" perl-hello.spec > ~/rpmbuild/SPECS/perl-hello.spec
+
+      - name: Build RPM
+        run: |
+          cd ~/rpmbuild
+          rpmbuild -ba SPECS/perl-hello.spec
+
+      - name: Upload RPM to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ~/rpmbuild/RPMS/**/*.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
